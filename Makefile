@@ -1,7 +1,7 @@
 # See the README for installation instructions.
 
 NODE_PATH ?= ./node_modules
-JS_COMPILER = $(NODE_PATH)/uglify-js/bin/uglifyjs
+JS_COMPILER = uglifyjs
 JS_TESTER = $(NODE_PATH)/vows/bin/vows
 
 all: \

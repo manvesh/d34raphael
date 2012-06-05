@@ -4661,6 +4661,7 @@ d3.raphael = function(paper) {
 };
 
 function throw_raphael_not_supported() {
+    console.error('Not Supported!'); // clint.tseng@socrata.com 2012/05/31: stacktraces in firefox
     throw "Not Supported!";
 };
 

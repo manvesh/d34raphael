@@ -1,40 +1,46 @@
 if(typeof Raphael !== "undefined") {
     // Inspiration (and code copied): http://strongriley.github.com/d3/ex/calendar.html (-ewebb 120430)
 
-// From: http://www.hunlock.com/blogs/Totally_Pwn_CSS_with_Javascript#quickIDX1
-    function d3_raphael_getCSSRule(ruleName, deleteFlag) {                     // Return requested style obejct
-        ruleName = ruleName.toLowerCase();                          // Convert test string to lower case.
-        if (document.styleSheets) {                                 // If browser can play with stylesheets
-            for (var i = 0; i < document.styleSheets.length; i++) { // For each stylesheet
-                var styleSheet = document.styleSheets[i];           // Get the current Stylesheet
-                var ii = 0;                                         // Initialize subCounter.
-                var cssRule = false;                                // Initialize cssRule.
-                do {                                                    // For each rule in stylesheet
-                    if (styleSheet.cssRules) {                      // Browser uses cssRules?
-                        cssRule = styleSheet.cssRules[ii];          // Yes --Mozilla Style
-                    } else {                                        // Browser usses rules?
-                        cssRule = styleSheet.rules[ii];             // Yes IE style.
-                    }                                               // End IE check.
-                    if (cssRule) {                                  // If we found a rule...
-                        if (cssRule.selectorText.toLowerCase() == ruleName) { //  match ruleName?
-                            if (deleteFlag == 'delete') {               // Yes.  Are we deleteing?
-                                if (styleSheet.cssRules) {              // Yes, deleting...
-                                    styleSheet.deleteRule(ii);          // Delete rule, Moz Style
-                                } else {                                // Still deleting.
-                                    styleSheet.removeRule(ii);          // Delete rule IE style.
-                                }                                       // End IE check.
-                                return true;                            // return true, class deleted.
-                            } else {                                    // found and not deleting.
-                                return cssRule;                         // return the style object.
-                            }                                           // End delete Check
-                        }                                               // End found rule name
-                    }                                                   // end found cssRule
-                    ii++;                                               // Increment sub-counter
-                } while (cssRule)                                       // end While loop
-            }                                                           // end For loop
-        }                                                               // end styleSheet ability check
-        return false;                                                   // we found NOTHING!
-    }                                                                   // end getCSSRule
+    // Originally from: http://www.hunlock.com/blogs/Totally_Pwn_CSS_with_Javascript#quickIDX1
+    // Note that this won't handle anything except exact rule matches, and only the first instance
+    // of said rule match.
+
+    // clint.tseng@socrata.com 2012/06/01
+    // IE perf is dreadful when fetching stylesheets and rules. We need to cache the results or
+    // we'll never get things done in anything resembling expediency. Unfortunately this means that
+    // anybody writing dynamic styles are out of luck. On the other hand, this is a pretty flimsy
+    // implementation anyway.
+
+    var ruleCache = {};
+    function d3_raphael_getCSSRule(ruleName) {
+        ruleName = ruleName.toLowerCase();
+        if (ruleCache[ruleName] !== undefined) {
+            return ruleCache[ruleName];
+        }
+
+        if (document.styleSheets) {
+            for (var i = 0; i < document.styleSheets.length; i++) {
+                var styleSheet = document.styleSheets[i];
+                var ii = 0;
+                var cssRule = false;
+                do {
+                    if (styleSheet.cssRules) {
+                        cssRule = styleSheet.cssRules[ii];
+                    } else {
+                        cssRule = styleSheet.rules[ii];
+                    }
+                    if (cssRule) {
+                        if (cssRule.selectorText.toLowerCase() == ruleName) {
+                            return ruleCache[ruleName] = cssRule;
+                        }
+                    }
+                    ii++;
+                } while (cssRule);
+            }
+        }
+
+        return ruleCache[ruleName] = false;
+    }
 
     function d3_raphael_getCSSAttributes(selector) {
         var rules = d3_raphael_getCSSRule(selector),

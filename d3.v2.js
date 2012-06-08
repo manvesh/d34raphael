@@ -5364,7 +5364,10 @@ d3_raphael_selectionPrototype.remove = function() {
  * @function
  * @name D3RaphaelSelection#transition
  */
-d3_raphael_selectionPrototype.transition = function() {
+d3_raphael_selectionPrototype.transition = function(shouldTransition) {
+    // allow an easy way to toggle transitioning
+    if (shouldTransition === false) return this;
+
     // minor hack to sub out the dependency we want to inject.
     var old_d3_transitionPrototype = d3_transitionPrototype;
     d3_transitionPrototype = d3_raphael_transitionPrototype;
@@ -5559,8 +5562,7 @@ if (typeof Sizzle === "function") {
         // but first build an index of ids we're looking for
         var domElemIndex = {};
         for (var i = -1; ++i < elemCount;) {
-            var domElem = domElems[i];
-            domElemIndex[domElem.raphaelid] = true;
+            domElemIndex[domElems[i].raphaelid] = true;
         }
 
         var raphaelElems = [];

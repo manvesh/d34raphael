@@ -11,8 +11,7 @@ if (typeof Sizzle === "function") {
         // but first build an index of ids we're looking for
         var domElemIndex = {};
         for (var i = -1; ++i < elemCount;) {
-            var domElem = domElems[i];
-            domElemIndex[domElem.raphaelid] = true;
+            domElemIndex[domElems[i].raphaelid] = true;
         }
 
         var raphaelElems = [];

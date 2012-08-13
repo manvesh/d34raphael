@@ -323,6 +323,10 @@ d3_raphael_selectionPrototype.selectAll = function(s) {
 };
 
 
+d3_raphael_selectionPrototype.selectAllWithProperty = function(type, property, value) {
+    return this.root.selectAllWithProperty(type, property, value);
+};
+
 /**
  * Iterate over the elements of the selection, executing the specified function. <br />
  * <br />

@@ -2076,7 +2076,10 @@ d3.selectAll = function(selector) {
       ? d3_selectionRoot.selectAll(selector)
       : d3_selection([d3_array(selector)]); // assume node[]
 };
-function d3_selection_enter(selection) {
+
+d3.selectAllWithProperty = function(selector, property, value) {
+    return d3_selectionRoot.selectAllWithProperty(selector, property, value);
+};function d3_selection_enter(selection) {
   d3_arraySubclass(selection, d3_selection_enterPrototype);
   return selection;
 }
@@ -4857,12 +4860,34 @@ function d3_raphael_selector(s, d3_paper, first) {
 
             return !first; // break forEach for first only requests
         }
-    })
+    });
 
     return found;
-};
+}
 
-/**
+function d3_raphael_type_and_property_selector(type, d3_paper, first, property, value) {
+    var found = [];
+
+    d3_paper.forEach(function(el) {
+        if(el.type === type) {
+            if (typeof property === "string") {
+              if (el[property]) {
+                if (value !== "undefined") {
+                  if (el[property] === value) {
+                    found.push(el);
+                  }
+                } else {
+                  // value isn't defined, and property exists
+                  found.push(el);
+                }
+              }
+            }
+            return !first; // break forEach for first only requests
+        }
+    });
+
+    return found;
+}/**
  * A d3 container for the Raphael paper, with delegate helpers to Raphael and select/selectAll functionality.
  *
  * @param paper
@@ -4898,6 +4923,10 @@ D3RaphaelRoot.prototype.selectAll = function(s) {
     return d3_raphael_selection([d3_raphael_selector(s, this, false)], this)
 };
 
+
+D3RaphaelRoot.prototype.selectAllWithProperty = function(type, property, value) {
+    return d3_raphael_selection([d3_raphael_type_and_property_selector(type, this, false, property, value)], this);
+};
 /**
  * Creates a Raphael paper primitive object.
  *
@@ -5255,6 +5284,10 @@ d3_raphael_selectionPrototype.selectAll = function(s) {
     return this.root.selectAll(s);
 };
 
+
+d3_raphael_selectionPrototype.selectAllWithProperty = function(type, property, value) {
+    return this.root.selectAllWithProperty(type, property, value);
+};
 
 /**
  * Iterate over the elements of the selection, executing the specified function. <br />

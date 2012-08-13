@@ -16,3 +16,7 @@ d3.selectAll = function(selector) {
       ? d3_selectionRoot.selectAll(selector)
       : d3_selection([d3_array(selector)]); // assume node[]
 };
+
+d3.selectAllWithProperty = function(selector, property, value) {
+    return d3_selectionRoot.selectAllWithProperty(selector, property, value);
+};

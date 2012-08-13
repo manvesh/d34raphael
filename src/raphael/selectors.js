@@ -56,8 +56,31 @@ function d3_raphael_selector(s, d3_paper, first) {
 
             return !first; // break forEach for first only requests
         }
-    })
+    });
 
     return found;
-};
+}
 
+function d3_raphael_type_and_property_selector(type, d3_paper, first, property, value) {
+    var found = [];
+
+    d3_paper.forEach(function(el) {
+        if(el.type === type) {
+            if (typeof property === "string") {
+              if (el[property]) {
+                if (value !== "undefined") {
+                  if (el[property] === value) {
+                    found.push(el);
+                  }
+                } else {
+                  // value isn't defined, and property exists
+                  found.push(el);
+                }
+              }
+            }
+            return !first; // break forEach for first only requests
+        }
+    });
+
+    return found;
+}

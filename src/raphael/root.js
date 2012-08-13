@@ -34,6 +34,10 @@ D3RaphaelRoot.prototype.selectAll = function(s) {
     return d3_raphael_selection([d3_raphael_selector(s, this, false)], this)
 };
 
+
+D3RaphaelRoot.prototype.selectAllWithProperty = function(type, property, value) {
+    return d3_raphael_selection([d3_raphael_type_and_property_selector(type, this, false, property, value)], this);
+};
 /**
  * Creates a Raphael paper primitive object.
  *
